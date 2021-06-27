@@ -12,7 +12,7 @@ export default {
   name: "Qr",
   data() {
     return {
-      link: window.location.host+'/result/detail/'+this.$route.params.id,
+      link: 'http://'+window.location.host+'/result/detail/'+this.$route.params.id,
     }
   },
   mounted: function () {
