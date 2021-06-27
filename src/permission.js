@@ -58,7 +58,7 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.indexOf(to.path) !== -1 || to.path.startsWith("/result/detail")) {
       // 在免登录白名单，直接进入
       next()
     } else {

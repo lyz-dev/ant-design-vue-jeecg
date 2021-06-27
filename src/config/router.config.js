@@ -1,4 +1,5 @@
-import { UserLayout, TabLayout, RouteView, BlankLayout, PageView } from '@/components/layouts'
+import {UserLayout, TabLayout, RouteView, BlankLayout, PageView} from '@/components/layouts'
+import Detail from "../views/appliance/Detail";
 
 /**
  * 走菜单，走权限控制
@@ -10,7 +11,7 @@ export const asyncRouterMap = [
     path: '/',
     name: 'dashboard',
     component: TabLayout,
-    meta: { title: '首页' },
+    meta: {title: '首页'},
     redirect: '/dashboard/analysis',
     children: [
 
@@ -322,7 +323,6 @@ export const constantRouterMap = [
       },
     ]
   },
-
   // {
   //   path: '/',
   //   name: 'index',
@@ -346,18 +346,10 @@ export const constantRouterMap = [
   //     },
   //   ]
   // },
-
   {
-    path: '/test',
-    component: BlankLayout,
-    redirect: '/test/home',
-    children: [
-      {
-        path: 'home',
-        name: 'TestHome',
-        component: () => import('@/views/Home')
-      }
-    ]
+    path: '/result/detail/:id',
+    name: 'Detail',
+    component: () => import('@/views/appliance/Detail')
   },
   {
     path: '/404',

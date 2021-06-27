@@ -3015,6 +3015,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001087, can
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001097.tgz#1129c40c9f5ee3282158da08fd915d301f4a9bd8"
   integrity sha512-TeuSleKt/vWXaPkLVFqGDnbweYfq4IaZ6rUugFf3rWY6dlII8StUZ8Ddin0PkADfgYZ4wRqCdO2ORl4Rn5eZIA==
 
+caniuse-lite@^1.0.30001240:
+  version "1.0.30001240"
+  resolved "https://registry.nlark.com/caniuse-lite/download/caniuse-lite-1.0.30001240.tgz?cache=0&sync_timestamp=1624686603653&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcaniuse-lite%2Fdownload%2Fcaniuse-lite-1.0.30001240.tgz#ec15d125b590602c8731545c5351ff054ad2d52f"
+  integrity sha1-7BXRJbWQYCyHMVRcU1H/BUrS1S8=
+
 case-sensitive-paths-webpack-plugin@^2.2.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.3.0.tgz#23ac613cc9a856e4f88ff8bb73bbb5e989825cf7"
@@ -9253,6 +9258,16 @@ q@^1.1.2:
   resolved "https://registry.npmjs.org/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qartjs@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.nlark.com/qartjs/download/qartjs-1.1.1.tgz#f6391368e5910e585e5673c41db2440c5ce07c47"
+  integrity sha1-9jkTaOWRDlheVnPEHbJEDFzgfEc=
+
+qrcodejs2@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.nlark.com/qrcodejs2/download/qrcodejs2-0.0.2.tgz#465afe5e39f19facecb932c11f7a186109146ae1"
+  integrity sha1-Rlr+Xjnxn6zsuTLBH3oYYQkUauE=
+
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.npmjs.org/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
@@ -11380,6 +11395,13 @@ vue-print-nb-jeecg@^1.0.9:
   integrity sha512-dWLbThjeq/hBo50wcKoHrJAxLEZcqiwoIFEjZQEvntVQs76PdDrWvpkC8F8tGZ5G9GXs9ihrddkXpaIltHJ1dQ==
   dependencies:
     babel-plugin-transform-runtime "^6.23.0"
+
+vue-qart@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.nlark.com/vue-qart/download/vue-qart-2.2.0.tgz#13336325d01975c832489e8ece8bd6f777c211e7"
+  integrity sha1-EzNjJdAZdcgySJ6OzovW93fCEec=
+  dependencies:
+    qartjs "1.1.1"
 
 vue-ref@^2.0.0:
   version "2.0.0"
