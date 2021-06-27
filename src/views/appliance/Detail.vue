@@ -10,19 +10,12 @@
     <div class="title">溯源信息</div>
     <TraceabilityInformationList v-bind:applianceInformationId="$route.params.id">
     </TraceabilityInformationList>
-
-    <div class="emqrcode">
-      <button @click="showQRcode">点击分享二维码</button>
-      <div id="qrcode" ref="qrcode"></div>
-    </div>
-    <h3>{{ $route.params.id }}</h3>
   </a-card>
 </template>
 
 <script>
 
 import TraceabilityInformationList from '../traceability/TraceabilityInformationList'
-import QRCode from "qrcodejs2";
 import DetailList from '@/components/tools/DetailList'
 
 
@@ -153,15 +146,6 @@ export default {
   },
   methods: {
     getInfo(id) { // 发起get请求
-      // let result = {}
-      // this.$http.get('/appliance/applianceInformation/byId?id=' + id).then(function (result) {
-      //   // 通过 result.body 拿到服务器返回的成功的数据
-      //   console.log(result.result)
-      //   this.myTempObj = result.result
-      //   // // Vue.set(this.detail,result)
-      //   // Vue.set(this.detail, 0, result.result)
-      // })
-
       this.$http({
         method: "get",
         url:"/appliance/applianceInformation/byId?id="+id,
@@ -173,32 +157,7 @@ export default {
       const value = this.detail[key];
       return !!value ? value : "--";
     },
-    /**
-     * @description 生成二维码
-     * @param  {number} qWidth  宽度
-     * @param  {number} qHeight  高度
-     * @param  {string} qText  二维码内容（跳转连接）
-     * @param  {string} qRender 渲染方式（有两种方式 table和canvas，默认是canvas）
-     */
-    qrcode(qWidth, qHeight, qText, qRender) {
-      let qrcode = new QRCode("qrcode", {
-        width: qWidth,
-        height: qHeight,
-        text: qText,
-        render: qRender
-      });
-    },
 
-    /**
-     * @description 点击显示二维码
-     */
-    showQRcode() {
-      //二维码初始化 点击一次添加一个二维码
-      this.$refs.qrcode.innerHTML = "";
-      this.$nextTick(function () {
-        this.qrcode(124, 124, this.link, "canvas");
-      });
-    },
   }
 }
 </script>

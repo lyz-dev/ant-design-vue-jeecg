@@ -1,12 +1,12 @@
 <template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增一周期</a-button>
+      <a-button v-if="visibility" @click="handleAdd" type="primary" icon="plus">新增一周期</a-button>
     </div>
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+      <div v-if="visibility" class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
         <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a
         style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
@@ -47,10 +47,10 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)" v-if="visibility">编辑</a>
 
           <a-divider type="vertical"/>
-          <a-dropdown>
+          <a-dropdown v-if="visibility">
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
               <a-menu-item>
@@ -82,13 +82,14 @@ import TraceabilityInformationModal from './modules/TraceabilityInformationModal
 export default {
   name: 'TraceabilityInformationList',
   mixins: [JeecgListMixin, mixinDevice],
-  props: ['applianceInformationId'],
+  props: ['applianceInformationId','visibility'],
   components: {
     TraceabilityInformationModal
   },
   data() {
     return {
       description: '溯源信息管理页面',
+      visibility:false,
       // 表头
       columns: [
         {

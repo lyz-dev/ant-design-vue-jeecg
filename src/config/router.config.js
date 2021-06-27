@@ -352,6 +352,11 @@ export const constantRouterMap = [
     component: () => import('@/views/appliance/Detail')
   },
   {
+    path: '/Qr/:id',
+    name: 'Qr',
+    component: () => import('@/views/qr/Qr')
+  },
+  {
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
   },

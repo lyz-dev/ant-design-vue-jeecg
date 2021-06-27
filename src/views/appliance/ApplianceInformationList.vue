@@ -91,13 +91,14 @@
                     :body-style="{ paddingBottom: '80px' }"
                     @close="onClose">
                     <a-card :bordered="false">
+                      <div class="title"><router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link></div>
                       <detail-list>
                         <detail-list-item :term="column.title" v-if="column.key != 'rowIndex'" v-for="column in columns" :key="column.dataIndex">{{showValue(column.dataIndex)}}</detail-list-item>
                       </detail-list>
                       <a-divider style="margin-bottom: 32px"/>
 
                       <div class="title">溯源信息</div>
-                      <TraceabilityInformationList v-bind:applianceInformationId="record.id" >
+                      <TraceabilityInformationList v-bind:applianceInformationId="record.id" v-bind:visibility="true" >
                       </TraceabilityInformationList>
                     </a-card>
                   </a-drawer>
@@ -129,6 +130,7 @@ import STable from '@/components/table/'
 import DetailList from '@/components/tools/DetailList'
 import ABadge from "ant-design-vue/es/badge/Badge"
 import TraceabilityInformationList from '../traceability/TraceabilityInformationList'
+import Qr from '../qr/Qr'
 
 const DetailListItem = DetailList.Item
 
@@ -143,7 +145,8 @@ export default {
     DetailListItem,
     DetailList,
     STable,
-    TraceabilityInformationList
+    TraceabilityInformationList,
+    Qr
   },
   data() {
     return {
