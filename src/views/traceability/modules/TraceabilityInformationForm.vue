@@ -29,11 +29,6 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="检测周期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="detectionCycle">
-              <a-input v-model="model.detectionCycle" placeholder="请输入检测周期"></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
             <a-form-model-item label="到期日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dateDue">
               <j-date placeholder="请选择到期日期" v-model="model.dateDue" style="width: 100%"/>
             </a-form-model-item>
@@ -116,9 +111,6 @@ export default {
         ],
         certificateNumber: [
           {required: true, message: '请输入证书编号!'},
-        ],
-        detectionCycle: [
-          {required: true, message: '请输入检测周期!'},
         ],
         dateDue: [
           {required: true, message: '请输入到期日期!'},

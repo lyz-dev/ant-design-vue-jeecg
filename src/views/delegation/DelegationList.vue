@@ -11,7 +11,8 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <!-- 高级查询区域 -->
+      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -56,7 +57,7 @@
             type="primary"
             icon="download"
             size="small"
-            @click="uploadFile(text)">
+            @click="downloadFile(text)">
             下载
           </a-button>
         </template>
@@ -83,7 +84,7 @@
       </a-table>
     </div>
 
-    <tenant-modal ref="modalForm" @ok="modalFormOk"></tenant-modal>
+    <delegation-modal ref="modalForm" @ok="modalFormOk"></delegation-modal>
   </a-card>
 </template>
 
@@ -92,48 +93,50 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import TenantModal from './modules/TenantModal'
-
+  import DelegationModal from './modules/DelegationModal'
+  import { loadCategoryData } from '@/api/api'
 
   export default {
-    name: "TenantList",
+    name: 'DelegationList',
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      TenantModal
+      DelegationModal
     },
     data () {
       return {
-        description: '管理页面',
+        description: '委托管理页面',
         // 表头
         columns: [
           {
-            title:'租户名称',
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
             align:"center",
-            dataIndex: 'name'
-          },{
-            title:'租户编号',
-            align:"center",
-            dataIndex: 'id'
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
           },
           {
-            title:'开始时间',
+            title:'委托计划标题',
             align:"center",
-            dataIndex: 'beginDate'
+            dataIndex: 'title'
           },
           {
-            title:'结束时间',
+            title:'器具id',
             align:"center",
-            dataIndex: 'endDate'
+            dataIndex: 'applianceinformationid'
           },
           {
             title:'状态',
             align:"center",
-            dataIndex: 'status_dictText'
+            dataIndex: 'status',
+            customRender: (text) => (text ? filterMultiDictText(this.dictOptions['status'], text) : '')
           },
           {
-            title:'租户类型',
+            title:'备注',
             align:"center",
-            dataIndex: 'type_dictText'
+            dataIndex: 'remark'
           },
           {
             title: '操作',
@@ -145,14 +148,17 @@
           }
         ],
         url: {
-          list: "/sys/tenant/list",
-          delete: "/sys/tenant/delete",
-          deleteBatch: "/sys/tenant/deleteBatch"
+          list: "/delegation/delegation/list",
+          delete: "/delegation/delegation/delete",
+          deleteBatch: "/delegation/delegation/deleteBatch"
+
         },
         dictOptions:{},
+        superFieldList:[],
       }
     },
     created() {
+    this.getSuperFieldList();
     },
     computed: {
       importExcelUrl: function(){
@@ -161,6 +167,20 @@
     },
     methods: {
       initDictConfig(){
+        loadCategoryData({code:''}).then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'status', res.result)
+          }
+        })
+      },
+      getSuperFieldList(){
+        let fieldList=[];
+        fieldList.push({type:'string',value:'title',text:'委托计划标题',dictCode:''})
+        fieldList.push({type:'string',value:'applianceinformationid',text:'器具id',dictCode:''})
+        fieldList.push({type:'string',value:'status',text:'状态'})
+        fieldList.push({type:'list_multi',value:'laboratoryId',text:'实验室id',dictTable:'', dictText:'', dictCode:''})
+        fieldList.push({type:'string',value:'remark',text:'备注',dictCode:''})
+        this.superFieldList = fieldList
       }
     }
   }

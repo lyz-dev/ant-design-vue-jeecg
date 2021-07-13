@@ -1,6 +1,9 @@
 <template>
+
   <div class="emqrcode">
 <!--    <a-button type="primary" @click="showQRcode">生成二维码</a-button>-->
+    <a-button v-print="'#qrcode'" ghost type="primary">打印</a-button>
+
     <div id="qrcode" ref="qrcode"></div>
   </div>
 </template>

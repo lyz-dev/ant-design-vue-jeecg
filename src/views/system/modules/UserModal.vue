@@ -30,7 +30,7 @@
           <a-form-model-item label="登录密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="password" >
             <a-input type="password" placeholder="请输入登录密码" v-model="model.password" />
           </a-form-model-item>
-  
+
           <a-form-model-item label="确认密码" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="confirmpassword" >
             <a-input type="password" @blur="handleConfirmBlur" placeholder="请重新输入登录密码" v-model="model.confirmpassword"/>
           </a-form-model-item>
@@ -40,15 +40,15 @@
           <a-input placeholder="请输入用户姓名" v-model="model.realname" />
         </a-form-model-item>
 
-        <a-form-model-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">
-          <a-input placeholder="请输入工号" v-model="model.workNo" />
-        </a-form-model-item>
+<!--        <a-form-model-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workNo">-->
+<!--          <a-input placeholder="请输入工号" v-model="model.workNo" />-->
+<!--        </a-form-model-item>-->
 
-        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>
-        </a-form-model-item>
+<!--        <a-form-model-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <j-select-position placeholder="请选择职务" :multiple="false" v-model="model.post"/>-->
+<!--        </a-form-model-item>-->
 
-        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" >
+        <a-form-model-item label="角色分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!roleDisabled" prop="selectedroles">
           <j-multi-select-tag
             :disabled="disableSubmit"
             v-model="model.selectedroles"
@@ -58,12 +58,12 @@
         </a-form-model-item>
 
         <!--部门分配-->
-        <a-form-model-item label="部门分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
-          <j-select-depart v-model="model.selecteddeparts" :multi="true" @back="backDepartInfo" :backDepart="true"></j-select-depart>
-        </a-form-model-item>
+<!--        <a-form-model-item label="部门分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled" prop="selecteddeparts">-->
+<!--          <j-select-depart v-model="model.selecteddeparts" :multi="false" @back="backDepartInfo" :backDepart="true"></j-select-depart>-->
+<!--        </a-form-model-item>-->
 
         <!--租户分配-->
-        <a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
+        <a-form-model-item label="租户分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled" prop="relTenantIds">
           <j-multi-select-tag
             :disabled="disableSubmit"
             v-model="model.relTenantIds"
@@ -72,7 +72,7 @@
           </j-multi-select-tag>
         </a-form-model-item>
 
-        <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
+<!--        <a-form-model-item label="身份" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-radio-group  v-model="model.userIdentity"  @change="identityChange">
             <a-radio :value="1">普通用户</a-radio>
             <a-radio :value="2">上级</a-radio>
@@ -85,27 +85,27 @@
             :options="nextDepartOptions"
             placeholder="请选择负责部门">
           </j-multi-select-tag>
-        </a-form-model-item>
+        </a-form-model-item>-->
 
-        <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>
-        </a-form-model-item>
+<!--        <a-form-model-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <j-image-upload class="avatar-uploader" text="上传" v-model="model.avatar" ></j-image-upload>-->
+<!--        </a-form-model-item>-->
 
-        <a-form-model-item label="生日" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-date-picker
-            style="width: 100%"
-            placeholder="请选择生日"
-            v-model="model.birthday"
-            :format="dateFormat"
-            :getCalendarContainer="node => node.parentNode"/>
-        </a-form-model-item>
-     
-        <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-select  v-model="model.sex"  placeholder="请选择性别" :getPopupContainer= "(target) => target.parentNode">
-            <a-select-option :value="1">男</a-select-option>
-            <a-select-option :value="2">女</a-select-option>
-          </a-select>
-        </a-form-model-item>
+<!--        <a-form-model-item label="生日" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <a-date-picker-->
+<!--            style="width: 100%"-->
+<!--            placeholder="请选择生日"-->
+<!--            v-model="model.birthday"-->
+<!--            :format="dateFormat"-->
+<!--            :getCalendarContainer="node => node.parentNode"/>-->
+<!--        </a-form-model-item>-->
+
+<!--        <a-form-model-item label="性别" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <a-select  v-model="model.sex"  placeholder="请选择性别" :getPopupContainer= "(target) => target.parentNode">-->
+<!--            <a-select-option :value="1">男</a-select-option>-->
+<!--            <a-select-option :value="2">女</a-select-option>-->
+<!--          </a-select>-->
+<!--        </a-form-model-item>-->
 
         <a-form-model-item label="邮箱" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="email">
           <a-input placeholder="请输入邮箱" v-model="model.email" />
@@ -119,9 +119,9 @@
           <a-input placeholder="请输入座机" v-model="model.telephone" />
         </a-form-model-item>
 
-        <a-form-model-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag  v-model="model.activitiSync"  placeholder="请选择是否同步工作流引擎" :type="'radio'" dictCode="activiti_sync"/>
-        </a-form-model-item>
+<!--        <a-form-model-item label="工作流引擎" :labelCol="labelCol" :wrapperCol="wrapperCol">-->
+<!--          <j-dict-select-tag  v-model="model.activitiSync"  placeholder="请选择是否同步工作流引擎" :type="'radio'" dictCode="activiti_sync"/>-->
+<!--        </a-form-model-item>-->
 
       </a-form-model>
     </a-spin>
@@ -163,17 +163,16 @@
         validatorRules:{
           username:[{required: true, message: '请输入用户账号!'},
                     {validator: this.validateUsername,}],
-          password: [{required: true,pattern:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/,message: '密码由8位数字、大小写字母和特殊符号组成!'},
+          password: [{required: true,message: '请输入登录密码！'},
                      {validator: this.validateToNextPassword,trigger: 'change'}],
           confirmpassword: [{required: true, message: '请重新输入登录密码!',},
                             { validator: this.compareToFirstPassword,}],
           realname:[{ required: true, message: '请输入用户名称!' }],
           phone: [{validator: this.validatePhone}],
           email: [{validator: this.validateEmail}],
-          roles:{},
-          workNo:[ { required: true, message: '请输入工号' },
-                  { validator: this.validateWorkNo }],
-          telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },]
+          telephone: [{ pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码' },],
+          selectedroles:[{ required: true, message: '请选择角色！' },{validator: this.validateRoles}],
+          relTenantIds:[{ required: true, message: '请选择租户！' },{validator: this.validateTenantIds}]
         },
         departIdShow:false,
         title:"操作",
@@ -447,20 +446,19 @@
         }
       })
       },
-      validateWorkNo(rule, value, callback){
-        var params = {
-          tableName: 'sys_user',
-          fieldName: 'work_no',
-          fieldVal: value,
-          dataId: this.userId
-        };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
-            callback()
-          } else {
-            callback("工号已存在!")
-          }
-        })
+      validateRoles(rule, value, callback){
+        if (!value) {
+          callback('请选择角色！');
+        }else{
+          callback();
+        }
+      },
+      validateTenantIds(rule, value, callback){
+        if (!value) {
+          callback('请选择租户！');
+        }else{
+          callback();
+        }
       },
       handleConfirmBlur(e) {
         const value = e.target.value;

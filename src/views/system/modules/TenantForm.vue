@@ -4,17 +4,17 @@
       <a-form-model ref="form" :model="model" slot="detail" :rules="validatorRules">
         <a-row>
           <a-col :span="24">
-            <a-form-model-item label="租户名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-model-item label="租户名称" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="name">
               <a-input v-model="model.name" placeholder="请输入租户名称"></a-input>
             </a-form-model-item>
           </a-col>
-          
+
           <a-col :span="24">
             <a-form-model-item label="租户编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="id">
               <a-input-number style="width: 100%" :min="1" v-model="model.id" placeholder="请输入租户编号" :disabled="disabledId"></a-input-number>
             </a-form-model-item>
           </a-col>
-          
+
           <a-col :span="24">
             <a-form-model-item label="开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <j-date placeholder="请选择开始时间" v-model="model.beginDate" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%"/>
@@ -23,6 +23,15 @@
           <a-col :span="24">
             <a-form-model-item label="结束时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <j-date placeholder="请选择结束时间" v-model="model.endDate" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" style="width: 100%"/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="租户类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="type">
+              <a-radio-group name="tenantType" v-model="model.type">
+                <a-radio :value="1">受检企业</a-radio>
+                <a-radio :value="2">实验室</a-radio>
+                <a-radio :value="3">平台</a-radio>
+              </a-radio-group>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -48,7 +57,7 @@
   import JFormContainer from '@/components/jeecg/JFormContainer'
   import JDate from '@/components/jeecg/JDate'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  
+
   export default {
     name: "TenantForm",
     components: {
@@ -87,7 +96,9 @@
         },
         confirmLoading: false,
         validatorRules: {
-          id:[ { required: true, message: '请输入租户编号!' },]
+          id:[ { required: true, message: '请输入租户编号!' },],
+          type:[ { required: true, message: '请输入租户类型!' },],
+          name:[ { required: true, message: '请输入租户名称!' },]
         },
         url: {
           add: "/sys/tenant/add",

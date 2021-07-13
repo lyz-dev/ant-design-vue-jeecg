@@ -89,7 +89,6 @@ export default {
   data() {
     return {
       description: '溯源信息管理页面',
-      visibility:false,
       // 表头
       columns: [
         {
@@ -164,12 +163,11 @@ export default {
         }
       ],
       url: {
-        list: "/traceability/traceabilityInformation/byApplianceInformationId?applianceInformationId="+this.applianceInformationId,
+        list:"/traceability/traceabilityInformation/byApplianceInformationId?applianceInformationId="+this.applianceInformationId,
         delete: "/traceability/traceabilityInformation/delete",
         deleteBatch: "/traceability/traceabilityInformation/deleteBatch",
         exportXlsUrl: "/traceability/traceabilityInformation/exportXls",
         importExcelUrl: "traceability/traceabilityInformation/importExcel",
-
       },
       dictOptions: {},
       superFieldList: [],
@@ -193,7 +191,6 @@ export default {
       fieldList.push({type: 'string', value: 'detectionLocation', text: '检测地点', dictCode: ''})
       fieldList.push({type: 'date', value: 'detectionDate', text: '检测日期'})
       fieldList.push({type: 'string', value: 'certificateNumber', text: '证书编号', dictCode: ''})
-      fieldList.push({type: 'string', value: 'detectionCycle', text: '检测周期', dictCode: ''})
       fieldList.push({type: 'date', value: 'dateDue', text: '到期日期'})
       fieldList.push({type: 'string', value: 'testItem', text: '检测项目', dictCode: ''})
       fieldList.push({type: 'string', value: 'testFee', text: '检测费', dictCode: ''})
