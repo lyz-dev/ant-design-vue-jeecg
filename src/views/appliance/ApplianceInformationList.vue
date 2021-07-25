@@ -133,7 +133,7 @@
     <appliance-information-modal ref="modalForm" @ok="modalFormOk"></appliance-information-modal>
 
     <a-modal
-      title="增加委托消息"
+      title="发起委托议价"
       :visible="visible2"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
@@ -145,14 +145,15 @@
             <a-row>
               <a-col :span="24">
                 <a-form-model-item label="委托计划标题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
-                  <a-input v-model="delegation.title" placeholder="请输入委托计划标题"  ></a-input>
+                  <a-input v-model="delegation.title" placeholder="请输入委托计划标题"></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
-                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="applianceinformationid">
-                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>
-                </a-form-model-item>
-              </a-col>
+<!--              <a-col :span="24">-->
+<!--                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol"-->
+<!--                                   prop="applianceinformationid">-->
+<!--                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>-->
+<!--                </a-form-model-item>-->
+<!--              </a-col>-->
               <a-col :span="24">
                 <a-form-model-item label="实验室" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="laboratoryId">
                   <j-multi-select-tag v-model="delegation.laboratoryId"
@@ -164,7 +165,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="remark">
-                  <a-input v-model="delegation.remark" placeholder="请输入备注"  ></a-input>
+                  <a-input v-model="delegation.remark" placeholder="请输入备注"></a-input>
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -188,9 +189,9 @@ import DetailList from '@/components/tools/DetailList'
 import ABadge from "ant-design-vue/es/badge/Badge"
 import TraceabilityInformationList from '../traceability/TraceabilityInformationList'
 import Qr from '../qr/Qr'
-import { httpAction, getAction } from '@/api/manage'
+import {httpAction, getAction} from '@/api/manage'
 import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
-import { validateDuplicateValue } from '@/utils/util'
+import {validateDuplicateValue} from '@/utils/util'
 
 const DetailListItem = DetailList.Item
 
@@ -210,6 +211,14 @@ export default {
     JMultiSelectTag,
     validateDuplicateValue
   },
+  props: {
+    //表单禁用
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    }
+  },
   data() {
     return {
       description: '器具信息管理页面',
@@ -217,25 +226,25 @@ export default {
       visible2: false,
       drawerWidth: 850,
       confirmLoading: false,
-      disableSubmit:false,
+      disableSubmit: false,
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 },
+        xs: {span: 24},
+        sm: {span: 5},
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
+        xs: {span: 24},
+        sm: {span: 16},
       },
       validatorRules: {
         title: [
-          { required: true, message: '请输入委托计划标题!'},
+          {required: true, message: '请输入委托计划标题!'},
         ],
         laboratoryId: [
-          { required: true, message: '请输入实验室!'},
+          {required: true, message: '请输入实验室!'},
         ],
       },
       record: {},
-      delegation:{},
+      delegation: {},
       tenantsOptions: [],
       // 表头
       columns: [
@@ -355,6 +364,7 @@ export default {
       },
       dictOptions: {},
       superFieldList: [],
+
     }
   },
   created() {
@@ -368,6 +378,9 @@ export default {
     },
     title() {
       return this.$route.meta.title
+    },
+    formDisabled() {
+      return this.disabled
     }
   },
   methods: {
@@ -379,14 +392,14 @@ export default {
       this.resetScreenSize();
     },
     //初始化租户字典
-    initTenantList(){
-      getAction(this.url.queryTenantList).then(res=>{
-        if(res.success){
-          this.tenantsOptions = res.result.map((item,index,arr)=>{
-              let c = {label:item.name, value: item.id+""}
-              return c;
+    initTenantList() {
+      getAction(this.url.queryTenantList).then(res => {
+        if (res.success) {
+          this.tenantsOptions = res.result.map((item, index, arr) => {
+            let c = {label: item.name, value: item.id + ""}
+            return c;
           })
-          console.log('this.tenantsOptions: ',this.tenantsOptions)
+          console.log('this.tenantsOptions: ', this.tenantsOptions)
         }
       })
     },
@@ -404,7 +417,7 @@ export default {
       for (var a = 0; a < this.selectedRowKeys.length; a++) {
         ids += this.selectedRowKeys[a] + ",";
       }
-     // alert(ids);
+      // alert(ids);
       this.delegation.applianceinformationid = ids;
       this.visible2 = true;
     },
@@ -414,16 +427,16 @@ export default {
       this.$refs.delegationForm.validate(valid => {
         if (valid) {
           that.confirmLoading = true;
-          let  httpurl=this.url.delegationAdd;
-          let  method = 'post';
+          let httpurl = this.url.delegationAdd;
+          let method = 'post';
 
-          httpAction(httpurl,this.delegation,method).then((res)=>{
-            if(res.success){
+          httpAction(httpurl, this.delegation, method).then((res) => {
+            if (res.success) {
               that.$message.success(res.message);
               that.$emit('ok');
               this.visible2 = false;
               this.delegation = {};
-            }else{
+            } else {
               that.$message.warning(res.message);
             }
           }).finally(() => {

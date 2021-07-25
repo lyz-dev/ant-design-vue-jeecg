@@ -22,12 +22,14 @@
                      @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-<!--          <a-menu-item key="1" @click="batchDel">-->
-<!--            <a-icon type="delete"/>-->
-<!--            删除-->
-<!--          </a-menu-item>-->
+          <!--          <a-menu-item key="1" @click="batchDel">-->
+          <!--            <a-icon type="delete"/>-->
+          <!--            删除-->
+          <!--          </a-menu-item>-->
           <a-menu-item key="1" @click="batchDelegate">
-            <a-icon type="form"/>发起委托</a-menu-item>
+            <a-icon type="form"/>
+            发起委托
+          </a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作
           <a-icon type="down"/>
@@ -111,31 +113,66 @@
       @close="onClose">
       <a-card :bordered="false">
         <detail-list>
-          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex'" v-for="column in columns" :key="column.dataIndex">{{showValue(column.dataIndex)}}</detail-list-item>
+          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex'" v-for="column in columns"
+                            :key="column.dataIndex">{{ showValue(column.dataIndex) }}
+          </detail-list-item>
         </detail-list>
         <a-divider style="margin-bottom: 32px"/>
 
         <div class="title">溯源信息</div>
-        <TraceabilityInformationList  v-if="visible" v-bind:applianceInformationId="record.id" v-bind:visibility="visible" >
+        <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
+                                     v-bind:visibility="visible">
         </TraceabilityInformationList>
       </a-card>
-      <a-button  type="primary"><router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link></a-button>
+      <a-button type="primary">
+        <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>
+      </a-button>
 
     </a-drawer>
 
     <appliance-information-modal ref="modalForm" @ok="modalFormOk"></appliance-information-modal>
 
     <a-modal
-      title="Title"
+      title="增加委托消息"
       :visible="visible2"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
       @cancel="handleCancel"
     >
-      <delegation-modal ref="modalForm"  @ok="modalFormOk"></delegation-modal>
+      <a-spin :spinning="confirmLoading">
+        <j-form-container :disabled="formDisabled">
+          <a-form-model ref="delegationForm" :model="delegation" :rules="validatorRules" slot="detail">
+            <a-row>
+              <a-col :span="24">
+                <a-form-model-item label="委托计划标题" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="title">
+                  <a-input v-model="delegation.title" placeholder="请输入委托计划标题"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol"
+                                   prop="applianceinformationid">
+                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="实验室" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="laboratoryId">
+                  <j-multi-select-tag v-model="delegation.laboratoryId"
+                                      :options="tenantsOptions"
+                                      placeholder="请选择实验室">
+                    {{ tenantsOptions }}
+                  </j-multi-select-tag>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="remark">
+                  <a-input v-model="delegation.remark" placeholder="请输入备注"></a-input>
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </a-form-model>
+        </j-form-container>
+      </a-spin>
     </a-modal>
-
-
   </a-card>
 </template>
 
@@ -151,8 +188,10 @@ import STable from '@/components/table/'
 import DetailList from '@/components/tools/DetailList'
 import ABadge from "ant-design-vue/es/badge/Badge"
 import TraceabilityInformationList from '../traceability/TraceabilityInformationList'
-import DelegationList from '../delegation/DelegationList'
 import Qr from '../qr/Qr'
+import {httpAction, getAction} from '@/api/manage'
+import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
+import {validateDuplicateValue} from '@/utils/util'
 
 const DetailListItem = DetailList.Item
 
@@ -169,16 +208,44 @@ export default {
     STable,
     TraceabilityInformationList,
     Qr,
-    DelegationList
+    JMultiSelectTag,
+    validateDuplicateValue
+  },
+  props: {
+    //表单禁用
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    }
   },
   data() {
     return {
       description: '器具信息管理页面',
       visible: false,
       visible2: false,
-      drawerWidth:850,
+      drawerWidth: 850,
       confirmLoading: false,
+      disableSubmit: false,
+      labelCol: {
+        xs: {span: 24},
+        sm: {span: 5},
+      },
+      wrapperCol: {
+        xs: {span: 24},
+        sm: {span: 16},
+      },
+      validatorRules: {
+        title: [
+          {required: true, message: '请输入委托计划标题!'},
+        ],
+        laboratoryId: [
+          {required: true, message: '请输入实验室!'},
+        ],
+      },
       record: {},
+      delegation: {},
+      tenantsOptions: [],
       // 表头
       columns: [
         {
@@ -292,15 +359,18 @@ export default {
         deleteBatch: "/appliance/applianceInformation/deleteBatch",
         exportXlsUrl: "/appliance/applianceInformation/exportXls",
         importExcelUrl: "appliance/applianceInformation/importExcel",
-
+        queryTenantList: '/sys/tenant/byType?type=2',
+        delegationAdd: "/delegation/delegation/add",
       },
       dictOptions: {},
       superFieldList: [],
+
     }
   },
   created() {
     this.$set(this.dictOptions, 'ifmetering', [{text: '是', value: 'Y'}, {text: '否', value: 'N'}])
     this.getSuperFieldList();
+    this.initTenantList();
   },
   computed: {
     importExcelUrl: function () {
@@ -308,6 +378,9 @@ export default {
     },
     title() {
       return this.$route.meta.title
+    },
+    formDisabled() {
+      return this.disabled
     }
   },
   methods: {
@@ -318,33 +391,60 @@ export default {
       this.record = data;
       this.resetScreenSize();
     },
+    //初始化租户字典
+    initTenantList() {
+      getAction(this.url.queryTenantList).then(res => {
+        if (res.success) {
+          this.tenantsOptions = res.result.map((item, index, arr) => {
+            let c = {label: item.name, value: item.id + ""}
+            return c;
+          })
+          console.log('this.tenantsOptions: ', this.tenantsOptions)
+        }
+      })
+    },
     // 根据屏幕变化,设置抽屉尺寸
-    resetScreenSize(){
+    resetScreenSize() {
       let screenWidth = document.body.clientWidth;
-      if(screenWidth < 500){
+      if (screenWidth < 500) {
         this.drawerWidth = screenWidth;
-      }else{
+      } else {
         this.drawerWidth = 850;
       }
     },
-    batchDelegate:function (){
+    batchDelegate: function () {
       var ids = "";
       for (var a = 0; a < this.selectedRowKeys.length; a++) {
         ids += this.selectedRowKeys[a] + ",";
       }
-      alert(ids);
-      this.visible2 = true;
-    },
-    showModal() {
+      // alert(ids);
+      this.delegation.applianceinformationid = ids;
       this.visible2 = true;
     },
     handleOk(e) {
-      this.ModalText = 'The modal will be closed after two seconds';
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible2 = false;
-        this.confirmLoading = false;
-      }, 2000);
+      const that = this;
+      // 触发表单验证
+      this.$refs.delegationForm.validate(valid => {
+        if (valid) {
+          that.confirmLoading = true;
+          let httpurl = this.url.delegationAdd;
+          let method = 'post';
+
+          httpAction(httpurl, this.delegation, method).then((res) => {
+            if (res.success) {
+              that.$message.success(res.message);
+              that.$emit('ok');
+              this.visible2 = false;
+              this.delegation = {};
+            } else {
+              that.$message.warning(res.message);
+            }
+          }).finally(() => {
+            that.confirmLoading = false;
+          })
+        }
+
+      })
     },
     handleCancel(e) {
       console.log('Clicked cancel button');
