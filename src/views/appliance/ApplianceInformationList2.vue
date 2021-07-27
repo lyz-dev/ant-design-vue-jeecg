@@ -11,15 +11,15 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('器具信息')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"
-                @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
+      <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <!--      <a-button type="primary" icon="download" @click="handleExportXls('器具信息')">导出</a-button>-->
+      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"-->
+      <!--                @change="handleImportExcel">-->
+      <!--        <a-button type="primary" icon="import">导入</a-button>-->
+      <!--      </a-upload>-->
       <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal"
-                     @handleSuperQuery="handleSuperQuery"></j-super-query>
+      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal"-->
+      <!--                     @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <!--          <a-menu-item key="1" @click="batchDel">-->
@@ -81,21 +81,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical"/>
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                  <a @click="showDrawer(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+            <a @click="showDrawer(record)">详情</a>
         </span>
       </a-table>
     </div>
@@ -133,7 +119,7 @@
     <appliance-information-modal ref="modalForm" @ok="modalFormOk"></appliance-information-modal>
 
     <a-modal
-      title="增加委托消息"
+      title="发起委托议价"
       :visible="visible2"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
@@ -148,12 +134,12 @@
                   <a-input v-model="delegation.title" placeholder="请输入委托计划标题"></a-input>
                 </a-form-model-item>
               </a-col>
-              <a-col :span="24">
-                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol"
-                                   prop="applianceinformationid">
-                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>
-                </a-form-model-item>
-              </a-col>
+              <!--              <a-col :span="24">-->
+              <!--                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol"-->
+              <!--                                   prop="applianceinformationid">-->
+              <!--                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>-->
+              <!--                </a-form-model-item>-->
+              <!--              </a-col>-->
               <a-col :span="24">
                 <a-form-model-item label="实验室" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="laboratoryId">
                   <j-multi-select-tag v-model="delegation.laboratoryId"
@@ -354,7 +340,7 @@ export default {
         }
       ],
       url: {
-        list: "/appliance/applianceInformation/list",
+        list: "/appliance/applianceInformation/preStage",
         delete: "/appliance/applianceInformation/delete",
         deleteBatch: "/appliance/applianceInformation/deleteBatch",
         exportXlsUrl: "/appliance/applianceInformation/exportXls",
