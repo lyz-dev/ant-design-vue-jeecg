@@ -74,8 +74,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="检测周期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usedNumber">
-              <a-input v-model="model.detectionCycle" placeholder="检测周期" type="number" ></a-input>
+            <a-form-model-item label="检测周期(月)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usedNumber">
+              <a-input v-model="model.detectionCycle" placeholder="检测周期(月)" type="number" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">

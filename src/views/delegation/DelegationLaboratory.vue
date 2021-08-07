@@ -120,6 +120,22 @@
                 </a-form-model-item>
               </a-col>
             </a-row>
+            <a-row>
+              <a-col>
+                <a-form-item>
+                  <a-form-item label="受检类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testingType">
+                    <a-radio-group v-model="order2.testingType" default-value="现场" button-style="solid">
+                      <a-radio-button value="现场">
+                        现场
+                      </a-radio-button>
+                      <a-radio-button value="带回">
+                        带回
+                      </a-radio-button>
+                    </a-radio-group>
+                  </a-form-item>
+                </a-form-item>
+              </a-col>
+            </a-row>
           </a-form-model>
         </j-form-container>
       </a-spin>
@@ -187,6 +203,9 @@ export default {
         money: [
           {required: true, message: '请输入价格!'},
         ],
+        testingType:[
+          {required: true, message: '请选择受检类型!'},
+        ]
       },
       visible2: false,
       visible3: false,
@@ -364,6 +383,7 @@ export default {
       this.$refs.orderMoneyForm.validate(valid => {
         if (valid) {
           that.confirmLoading = true;
+          // alert(JSON.stringify(this.order2))
           httpAction(this.url.orderMoney, this.order2, "post").then((res) => {
             if (res.success) {
               that.$message.success(res.message);

@@ -4,6 +4,26 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
+          <a-col :md="6" :sm="24">
+            <a-form-item label="到期天数">
+              <j-input type="number" v-model="queryParam.numOfDays" placeholder="请输入到期天数"></j-input>
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-form-item label="到期起止日期">
+              <a-range-picker
+                format="YYYY-MM-DD"
+                @change="onChangeTimeProject"
+                v-model="timeValue"/>
+            </a-form-item>
+          </a-col>
+
+          <a-col :md="6" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -12,7 +32,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-      <!--      <a-button type="primary" icon="download" @click="handleExportXls('器具信息')">导出</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('预超期器具信息')">导出</a-button>
       <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"-->
       <!--                @change="handleImportExcel">-->
       <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -97,24 +117,69 @@
       :closable="true"
       style="height: 100%;overflow: auto;padding-bottom: 53px;"
       @close="onClose">
+
+
+      <a-space>
+        <a-button type="primary" @click="qjbs">
+          导出器具标识
+        </a-button>
+
+        <a-button type="primary" @click="jlbs">
+          导出计量标识
+        </a-button>
+
+        <a-button type="primary" @click="qrcodebs">
+          <!--          <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>-->
+          生成二维码
+        </a-button>
+
+      </a-space>
+
+      <a-divider style="margin-bottom: 32px"/>
       <a-card :bordered="false">
         <detail-list>
-          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex'" v-for="column in columns"
+          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex' && column.title !='操作'"
+                            v-for="column in columns"
                             :key="column.dataIndex">{{ showValue(column.dataIndex) }}
           </detail-list-item>
         </detail-list>
-        <a-divider style="margin-bottom: 32px"/>
-
-        <div class="title">溯源信息</div>
-        <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
-                                     v-bind:visibility="visible">
-        </TraceabilityInformationList>
       </a-card>
-      <a-button type="primary">
-        <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>
-      </a-button>
+      <a-divider style="margin-bottom: 32px"/>
+
+      <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
+                                   v-bind:cycle="record.detectionCycle"
+                                   v-bind:visibility="visible">
+      </TraceabilityInformationList>
 
     </a-drawer>
+
+
+    <a-modal v-model="qjVisible" title="器具标识">
+      <template slot="footer">
+        <a-button key="back" @click="qjCancel">
+          关闭
+        </a-button>
+      </template>
+      <appliance-print v-bind:applianceInformation="record" v-if="qjVisible"></appliance-print>
+    </a-modal>
+
+    <a-modal v-model="jlVisible" title="计量标识">
+      <template slot="footer">
+        <a-button key="back" @click="jlCancel">
+          关闭
+        </a-button>
+      </template>
+      <trace-print v-bind:applianceInformation="record" v-if="jlVisible"></trace-print>
+    </a-modal>
+
+    <a-modal v-model="qrcodeVisible" title="二维码">
+      <template slot="footer">
+        <a-button key="back" @click="qrCancel">
+          关闭
+        </a-button>
+      </template>
+      <Qr v-bind:paramId="record.id" v-if="qrcodeVisible"></Qr>
+    </a-modal>
 
     <appliance-information-modal ref="modalForm" @ok="modalFormOk"></appliance-information-modal>
 
@@ -134,12 +199,6 @@
                   <a-input v-model="delegation.title" placeholder="请输入委托计划标题"></a-input>
                 </a-form-model-item>
               </a-col>
-              <!--              <a-col :span="24">-->
-              <!--                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol"-->
-              <!--                                   prop="applianceinformationid">-->
-              <!--                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>-->
-              <!--                </a-form-model-item>-->
-              <!--              </a-col>-->
               <a-col :span="24">
                 <a-form-model-item label="实验室" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="laboratoryId">
                   <j-multi-select-tag v-model="delegation.laboratoryId"
@@ -178,14 +237,23 @@ import Qr from '../qr/Qr'
 import {httpAction, getAction} from '@/api/manage'
 import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
 import {validateDuplicateValue} from '@/utils/util'
+import JeecgDemoModal from "../jeecg/modules/JeecgDemoModal";
+import AppliancePrint from "./AppliancePrint";
+import TracePrint from "../traceability/TracePrint";
+import JDate from '@/components/jeecg/JDate';
+import moment from 'moment';
+
+
 
 const DetailListItem = DetailList.Item
 
 
 export default {
-  name: 'ApplianceInformationList',
+  name: 'ApplianceInformationList2',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
+    JeecgDemoModal,
+    JDate,
     ApplianceInformationModal,
     PageLayout,
     ABadge,
@@ -195,7 +263,9 @@ export default {
     TraceabilityInformationList,
     Qr,
     JMultiSelectTag,
-    validateDuplicateValue
+    validateDuplicateValue,
+    AppliancePrint,
+    TracePrint
   },
   props: {
     //表单禁用
@@ -208,8 +278,12 @@ export default {
   data() {
     return {
       description: '器具信息管理页面',
+      //dateFormat: 'YYYY/MM/DD',
       visible: false,
       visible2: false,
+      qjVisible: false,
+      jlVisible: false,
+      qrcodeVisible: false,
       drawerWidth: 850,
       confirmLoading: false,
       disableSubmit: false,
@@ -221,6 +295,14 @@ export default {
         xs: {span: 24},
         sm: {span: 16},
       },
+      moment,
+      formItemLayout: {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 14 }
+      },
+      //  因为一般情况下期望得到的都是对象，所以我们要自己定义一个时间名字(随便定义)
+      //  这里定义的都是默认当天的时间段，格式是年月日
+      timeValue: [],
       validatorRules: {
         title: [
           {required: true, message: '请输入委托计划标题!'},
@@ -315,7 +397,7 @@ export default {
           dataIndex: 'usedNumber'
         },
         {
-          title: '检测周期',
+          title: '检测周期（月）',
           align: "center",
           dataIndex: 'detectionCycle'
         },
@@ -344,13 +426,16 @@ export default {
         delete: "/appliance/applianceInformation/delete",
         deleteBatch: "/appliance/applianceInformation/deleteBatch",
         exportXlsUrl: "/appliance/applianceInformation/exportXls",
-        importExcelUrl: "appliance/applianceInformation/importExcel",
+        importExcelUrl: "appliance/applianceInformation/preStage/importExcel",
         queryTenantList: '/sys/tenant/byType?type=2',
         delegationAdd: "/delegation/delegation/add",
       },
       dictOptions: {},
       superFieldList: [],
-
+      queryParam: {
+        dataStr2:[],
+        dataStr:'',
+      },
     }
   },
   created() {
@@ -370,6 +455,38 @@ export default {
     }
   },
   methods: {
+    onChangeTimeProject(date, dateString) {
+      // 让我们传的值等于我们所选的值
+      this.timeValue = date;
+      // 需求小技巧：此处为判断我们所选择的时间是否超过三个月，超过了三个月需要友好提醒
+      if (this.timeValue[0] && this.timeValue[1]) {
+        if (Math.abs(moment(this.timeValue[0]).diff(moment(this.timeValue[1]), 'days')) > 90) {
+          this.$message.info('时间跨度超过3个月，查询时间可能较长', 5);
+        }
+      }
+      this.queryParam.begin = this.timeValue.length > 0 ? this.timeValue[0].format('YYYY-MM-DD') : '';
+      this.queryParam.end = this.timeValue.length > 0 ? this.timeValue[1].format('YYYY-MM-DD') : '';
+      console.log(this.queryParam.begin);
+      console.log(this.queryParam.end);
+    },
+    qjbs() {
+      this.qjVisible = true;
+    },
+    jlbs() {
+      this.jlVisible = true;
+    },
+    qrcodebs() {
+      this.qrcodeVisible = true;
+    },
+    qjCancel(e) {
+      this.qjVisible = false;
+    },
+    jlCancel(e) {
+      this.jlVisible = false;
+    },
+    qrCancel(e) {
+      this.qrcodeVisible = false;
+    },
     initDictConfig() {
     },
     showDrawer(data) {

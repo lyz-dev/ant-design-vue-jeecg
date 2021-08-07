@@ -117,11 +117,6 @@
         <j-form-container :disabled="formDisabled">
           <a-form-model ref="orderLogForm" :model="order" :rules="validatorRules" slot="detail">
             <a-row>
-              <!--              <a-col :span="24">
-                              <a-form-model-item label="订单id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="orderId">
-                                <a-input v-model="order.orderId" placeholder="请输入订单id"></a-input>
-                              </a-form-model-item>
-                            </a-col>-->
               <a-col :span="24">
                 <a-form-model-item label="评论" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="commentString">
                   <a-textarea v-model="order.commentString" rows="4" placeholder="请输入评论"/>
@@ -334,7 +329,7 @@ export default {
           this.order = {};
         }
       });
-      this.handleExpand(this.order);
+      this.handleExpand(true,this.order);
     },
     handleOk(e) {
       const that = this;
@@ -360,7 +355,7 @@ export default {
           });
         }
       });
-      this.handleExpand(this.order);
+      this.handleExpand(true,this.order);
     },
     handleCancel(e) {
       console.log('Clicked cancel button');
@@ -374,7 +369,7 @@ export default {
         this.expandedRowKeys.push(record.id);
         getAction(this.url.listOrderByDelegationId, {delegationId: record.id,
           active:true,
-          status:"!0"}).then((res) => {
+          status:"gt 0"}).then((res) => {
           if (res.success) {
             this.loading = false;
             this.innerData = res.result.records;

@@ -11403,6 +11403,11 @@ vue-qart@^2.2.0:
   dependencies:
     qartjs "1.1.1"
 
+vue-qr@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.nlark.com/vue-qr/download/vue-qr-2.5.0.tgz#2b938f8d4c3d07eaf9e4931b714e32f7ca15b5dd"
+  integrity sha1-K5OPjUw9B+r55JMbcU4y98oVtd0=
+
 vue-ref@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/vue-ref/-/vue-ref-2.0.0.tgz#483084d732abed11da796778a8266a3af0ea1a9c"

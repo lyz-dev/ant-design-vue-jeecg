@@ -82,7 +82,7 @@ import TraceabilityInformationModal from './modules/TraceabilityInformationModal
 export default {
   name: 'TraceabilityInformationList',
   mixins: [JeecgListMixin, mixinDevice],
-  props: ['applianceInformationId','visibility'],
+  props: ['applianceInformationId','visibility','cycle'],
   components: {
     TraceabilityInformationModal
   },
@@ -143,7 +143,7 @@ export default {
           dataIndex: 'testFee'
         },
         {
-          title: '证书备份',
+          title: '电子证书',
           align: "center",
           dataIndex: 'certificateBackup',
           scopedSlots: {customRender: 'fileSlot'}
@@ -194,7 +194,7 @@ export default {
       fieldList.push({type: 'date', value: 'dateDue', text: '到期日期'})
       fieldList.push({type: 'string', value: 'testItem', text: '检测项目', dictCode: ''})
       fieldList.push({type: 'string', value: 'testFee', text: '检测费', dictCode: ''})
-      fieldList.push({type: 'string', value: 'certificateBackup', text: '证书备份', dictCode: ''})
+      fieldList.push({type: 'string', value: 'certificateBackup', text: '电子证书', dictCode: ''})
       fieldList.push({type: 'string', value: 'remark', text: '备注', dictCode: ''})
       fieldList.push({type: 'string', value: 'applianceid', text: '器具id', dictCode: ''})
       this.superFieldList = fieldList

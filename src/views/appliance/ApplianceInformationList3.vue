@@ -11,15 +11,15 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
-<!--      <a-button type="primary" icon="download" @click="handleExportXls('器具信息')">导出</a-button>-->
-<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"-->
-<!--                @change="handleImportExcel">-->
-<!--        <a-button type="primary" icon="import">导入</a-button>-->
-<!--      </a-upload>-->
+      <!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('超期器具信息')">导出</a-button>
+      <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"-->
+      <!--                @change="handleImportExcel">-->
+      <!--        <a-button type="primary" icon="import">导入</a-button>-->
+      <!--      </a-upload>-->
       <!-- 高级查询区域 -->
-<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal"-->
-<!--                     @handleSuperQuery="handleSuperQuery"></j-super-query>-->
+      <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal"-->
+      <!--                     @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <!--          <a-menu-item key="1" @click="batchDel">-->
@@ -81,7 +81,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-           <a @click="showDrawer(record)">详情</a>
+            <a @click="showDrawer(record)">详情</a>
         </span>
       </a-table>
     </div>
@@ -97,24 +97,68 @@
       :closable="true"
       style="height: 100%;overflow: auto;padding-bottom: 53px;"
       @close="onClose">
+
+
+      <a-space>
+        <a-button type="primary" @click="qjbs">
+          导出器具标识
+        </a-button>
+
+        <a-button type="primary" @click="jlbs">
+          导出计量标识
+        </a-button>
+
+        <a-button type="primary" @click="qrcodebs">
+          <!--          <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>-->
+          生成二维码
+        </a-button>
+
+      </a-space>
+
+      <a-divider style="margin-bottom: 32px"/>
       <a-card :bordered="false">
         <detail-list>
-          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex'" v-for="column in columns"
+          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex' && column.title !='操作'" v-for="column in columns"
                             :key="column.dataIndex">{{ showValue(column.dataIndex) }}
           </detail-list-item>
         </detail-list>
-        <a-divider style="margin-bottom: 32px"/>
-
-        <div class="title">溯源信息</div>
-        <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
-                                     v-bind:visibility="visible">
-        </TraceabilityInformationList>
       </a-card>
-      <a-button type="primary">
-        <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>
-      </a-button>
+      <a-divider style="margin-bottom: 32px"/>
+
+      <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
+                                   v-bind:cycle="record.detectionCycle"
+                                   v-bind:visibility="visible">
+      </TraceabilityInformationList>
 
     </a-drawer>
+
+
+    <a-modal v-model="qjVisible" title="器具标识">
+      <template slot="footer">
+        <a-button key="back" @click="qjCancel">
+          关闭
+        </a-button>
+      </template>
+      <appliance-print v-bind:applianceInformation="record" v-if="qjVisible"></appliance-print>
+    </a-modal>
+
+    <a-modal v-model="jlVisible" title="计量标识">
+      <template slot="footer">
+        <a-button key="back" @click="jlCancel">
+          关闭
+        </a-button>
+      </template>
+      <trace-print v-bind:applianceInformation="record" v-if="jlVisible"></trace-print>
+    </a-modal>
+
+    <a-modal v-model="qrcodeVisible" title="二维码">
+      <template slot="footer">
+        <a-button key="back" @click="qrCancel">
+          关闭
+        </a-button>
+      </template>
+      <Qr v-bind:paramId="record.id" v-if="qrcodeVisible"></Qr>
+    </a-modal>
 
     <appliance-information-modal ref="modalForm" @ok="modalFormOk"></appliance-information-modal>
 
@@ -134,12 +178,6 @@
                   <a-input v-model="delegation.title" placeholder="请输入委托计划标题"></a-input>
                 </a-form-model-item>
               </a-col>
-              <!--              <a-col :span="24">-->
-              <!--                <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol"-->
-              <!--                                   prop="applianceinformationid">-->
-              <!--                  <a-input v-model="delegation.applianceinformationid" placeholder="请输入器具id"></a-input>-->
-              <!--                </a-form-model-item>-->
-              <!--              </a-col>-->
               <a-col :span="24">
                 <a-form-model-item label="实验室" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="laboratoryId">
                   <j-multi-select-tag v-model="delegation.laboratoryId"
@@ -178,14 +216,18 @@ import Qr from '../qr/Qr'
 import {httpAction, getAction} from '@/api/manage'
 import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
 import {validateDuplicateValue} from '@/utils/util'
+import AppliancePrint from "./AppliancePrint";
+import TracePrint from "../traceability/TracePrint";
+import JeecgDemoModal from "../jeecg/modules/JeecgDemoModal";
 
 const DetailListItem = DetailList.Item
 
 
 export default {
-  name: 'ApplianceInformationList',
+  name: 'ApplianceInformationList3',
   mixins: [JeecgListMixin, mixinDevice],
   components: {
+    JeecgDemoModal,
     ApplianceInformationModal,
     PageLayout,
     ABadge,
@@ -195,7 +237,9 @@ export default {
     TraceabilityInformationList,
     Qr,
     JMultiSelectTag,
-    validateDuplicateValue
+    validateDuplicateValue,
+    AppliancePrint,
+    TracePrint
   },
   props: {
     //表单禁用
@@ -210,6 +254,9 @@ export default {
       description: '器具信息管理页面',
       visible: false,
       visible2: false,
+      qjVisible: false,
+      jlVisible: false,
+      qrcodeVisible:false,
       drawerWidth: 850,
       confirmLoading: false,
       disableSubmit: false,
@@ -315,7 +362,7 @@ export default {
           dataIndex: 'usedNumber'
         },
         {
-          title: '检测周期',
+          title: '检测周期（月）',
           align: "center",
           dataIndex: 'detectionCycle'
         },
@@ -344,7 +391,7 @@ export default {
         delete: "/appliance/applianceInformation/delete",
         deleteBatch: "/appliance/applianceInformation/deleteBatch",
         exportXlsUrl: "/appliance/applianceInformation/exportXls",
-        importExcelUrl: "appliance/applianceInformation/importExcel",
+        importExcelUrl: "appliance/applianceInformation/overdue/importExcel",
         queryTenantList: '/sys/tenant/byType?type=2',
         delegationAdd: "/delegation/delegation/add",
       },
@@ -370,6 +417,24 @@ export default {
     }
   },
   methods: {
+    qjbs() {
+      this.qjVisible = true;
+    },
+    jlbs() {
+      this.jlVisible = true;
+    },
+    qrcodebs() {
+      this.qrcodeVisible = true;
+    },
+    qjCancel(e) {
+      this.qjVisible = false;
+    },
+    jlCancel(e) {
+      this.jlVisible = false;
+    },
+    qrCancel(e) {
+      this.qrcodeVisible = false;
+    },
     initDictConfig() {
     },
     showDrawer(data) {

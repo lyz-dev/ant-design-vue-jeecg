@@ -8,11 +8,6 @@
               <a-input v-model="model.title" placeholder="请输入委托计划标题"  ></a-input>
             </a-form-model-item>
           </a-col>
-<!--          <a-col :span="24">
-            <a-form-model-item label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="applianceinformationid">
-              <a-input v-model="model.applianceinformationid" placeholder="请输入器具id"  ></a-input>
-            </a-form-model-item>
-          </a-col>-->
           <a-col :span="24">
             <a-form-model-item label="实验室" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="laboratoryId">
               <j-multi-select-tag :disabled="disableSubmit"
