@@ -68,7 +68,9 @@
       </a-table>
     </div>
 
-    <traceability-information-modal v-bind:applianceInformationId="this.applianceInformationId" ref="modalForm" @ok="modalFormOk"></traceability-information-modal>
+    <traceability-information-modal v-bind:applianceInformationId="this.applianceInformationId"
+                                    v-bind:cycle="this.cycle"
+                                    ref="modalForm" @ok="modalFormOk"></traceability-information-modal>
   </a-card>
 </template>
 
@@ -91,6 +93,14 @@ export default {
       description: '溯源信息管理页面',
       // 表头
       columns: [
+        {
+          title: '是否为主周期',
+          align: "center",
+          dataIndex: 'flag',
+          customRender: function (text) {
+            return !text ? "否" : (text===true ?'是':'否')
+          }
+        },
         {
           title: '检测机构',
           align: "center",

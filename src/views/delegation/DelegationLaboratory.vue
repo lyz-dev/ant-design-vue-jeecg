@@ -114,26 +114,51 @@
         <j-form-container :disabled="formDisabled">
           <a-form-model ref="orderMoneyForm" :model="order2" :rules="validatorRules2" slot="detail">
             <a-row>
-              <a-col :span="50">
+              <a-col :span="24">
                 <a-form-model-item label="单价" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="money">
                   <a-input-number v-model="order2.money" placeholder="请输入金额"/>
                 </a-form-model-item>
               </a-col>
-            </a-row>
-            <a-row>
-              <a-col>
-                <a-form-item>
-                  <a-form-item label="受检类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testingType">
-                    <a-radio-group v-model="order2.testingType" default-value="现场" button-style="solid">
-                      <a-radio-button value="现场">
-                        现场
-                      </a-radio-button>
-                      <a-radio-button value="带回">
-                        带回
-                      </a-radio-button>
-                    </a-radio-group>
-                  </a-form-item>
-                </a-form-item>
+              <a-col :span="24">
+                <a-form-model-item label="检测类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testingType">
+                  <!--              <a-input v-model="model.testingType" placeholder="请输入检测类型"></a-input>-->
+                  <a-radio-group  v-model="order2.testingType" button-style="solid">
+                    <a-radio-button value="检定">
+                      检定
+                    </a-radio-button>
+                    <a-radio-button value="校准">
+                      校准
+                    </a-radio-button>
+                    <a-radio-button value="检测报告">
+                      检测报告
+                    </a-radio-button>
+                    <a-radio-button value="其他">
+                      其他
+                    </a-radio-button>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="检测地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="detectionLocation">
+                  <!--              <a-input v-model="model.detectionLocation" placeholder="请输入检测地点"></a-input>-->
+                  <a-radio-group  v-model="order2.detectionLocation" button-style="solid">
+                    <a-radio-button value="本地">
+                      本地
+                    </a-radio-button>
+                    <a-radio-button value="送检">
+                      送检
+                    </a-radio-button>
+                    <a-radio-button value="其他">
+                      其他
+                    </a-radio-button>
+                  </a-radio-group>
+                  <a-input v-if="order2.detectionLocation=='其他'" v-model="order2.locationOther" placeholder="请输入检测地点"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="检测项目" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testItem">
+                  <a-input v-model="order2.testItem" placeholder="请输入检测项目"></a-input>
+                </a-form-model-item>
               </a-col>
             </a-row>
           </a-form-model>
@@ -203,9 +228,15 @@ export default {
         money: [
           {required: true, message: '请输入价格!'},
         ],
-        testingType:[
-          {required: true, message: '请选择受检类型!'},
-        ]
+        testingType: [
+          {required: true, message: '请输入检测类型!'},
+        ],
+        detectionLocation: [
+          {required: true, message: '请输入检测地点!'},
+        ],
+        testItem: [
+          {required: true, message: '请输入检测项目!'},
+        ],
       },
       visible2: false,
       visible3: false,

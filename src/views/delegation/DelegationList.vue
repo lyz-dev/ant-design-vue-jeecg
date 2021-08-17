@@ -1,36 +1,6 @@
 <template>
   <a-card :bordered="false">
 
-    <!-- 查询区域 -->
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="24">
-
-          <a-col :md="6" :sm="24">
-            <a-form-item label="订单号">
-              <a-input placeholder="请输入订单号" v-model="queryParam.orderCode"></a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-form-item label="订单类型">
-              <a-select placeholder="请输入订单类型" v-model="queryParam.ctype">
-                <a-select-option value="1">国内订单</a-select-option>
-                <a-select-option value="2">国际订单</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-
-          <a-col :md="6" :sm="24">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-            </span>
-          </a-col>
-
-        </a-row>
-      </a-form>
-    </div>
-
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -95,8 +65,8 @@
               <a v-if="record.status==='1'" @click="changeStatus(record,2)">确认议价</a>
               <a-divider v-if="record.status==='2'" type="vertical"/>
               <a v-if="record.status==='2'" @click="changeStatus(record,3)">锁定议价</a>
-              <a-divider v-if="record.status==='4'" type="vertical"/>
-              <a v-if="record.status==='4'" @click="changeStatus(record,5)">确认完成</a>
+              <a-divider v-if="record.status==='3' || record.status==='4'" type="vertical"/>
+              <a v-if="record.status==='3' || record.status==='4'" @click="termina(record)">确认完成</a>
             </span>
         </a-table>
       </a-table>
@@ -128,6 +98,32 @@
       </a-spin>
     </a-modal>
 
+    <a-modal
+      title="人工终止"
+      :visible="visible3"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk2"
+      @cancel="handleCancel2"
+    >
+      <a-spin :spinning="confirmLoading">
+        <j-form-container :disabled="formDisabled">
+          <a-form-model ref="orderMoneyForm" :model="order2" :rules="validatorRules2" slot="detail">
+            <a-row>
+              <a-col :span="24">
+                <a-form-model-item label="证书编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="certificateNumber">
+                  <a-input v-model="order2.certificateNumber" placeholder="请输入证书编号"></a-input>
+                </a-form-model-item>
+              </a-col>
+              <a-col :span="24">
+                <a-form-model-item label="电子证书" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="certificateBackup">
+                  <j-upload v-model="order2.certificateBackup"></j-upload>
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </a-form-model>
+        </j-form-container>
+      </a-spin>
+    </a-modal>
 
     <a-drawer
       :title="title"
@@ -140,7 +136,7 @@
       style="height: 100%;overflow: auto;padding-bottom: 53px;"
       @close="onClose">
       <a-card :bordered="false">
-          <OrderDetail v-if="visible" v-bind:order="order"></OrderDetail>
+        <OrderDetail v-if="visible" v-bind:order="order"></OrderDetail>
       </a-card>
       <a-card :bordered="false">
         <OrderComment v-if="visible" v-bind:order="order"></OrderComment>
@@ -177,6 +173,7 @@ export default {
       drawerWidth: 850,
       disableSubmit: false,
       order: {},
+      order2: {},
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -191,6 +188,12 @@ export default {
         ],
       },
       visible2: false,
+      visible3: false,
+      validatorRules2: {
+        certificateNumber: [
+          {required: true, message: '请输入证书编号!'},
+        ],
+      },
       confirmLoading: false,
       // 子表表头
       innerColumns: [
@@ -279,6 +282,7 @@ export default {
         orderAdd: "/delegation/orderLogs/add",
         orderStatus: "/deviceorder/deviceOrder/status",
         orderLogs: "/delegation/orderLogs/list",
+        termina: "/deviceorder/deviceOrder/termina",
       },
     }
   },
@@ -294,6 +298,11 @@ export default {
     },
   },
   methods: {
+    termina(data) {
+      this.order2 = data
+      // alert(JSON.stringify(this.order2))
+      this.visible3 = true;
+    },
     addLog(record) {
       // alert(JSON.stringify(record));
       this.order = record
@@ -329,7 +338,7 @@ export default {
           this.order = {};
         }
       });
-      this.handleExpand(true,this.order);
+      this.handleExpand(true, this.order);
     },
     handleOk(e) {
       const that = this;
@@ -355,11 +364,42 @@ export default {
           });
         }
       });
-      this.handleExpand(true,this.order);
+      this.handleExpand(true, this.order);
     },
     handleCancel(e) {
       console.log('Clicked cancel button');
       this.visible2 = false;
+    },
+    handleOk2(e) {
+      const that = this;
+      // 触发表单验证
+      this.$refs.orderMoneyForm.validate(valid => {
+        if (valid) {
+          that.confirmLoading = true;
+          // alert(JSON.stringify(this.order2))
+          httpAction(this.url.termina, this.order2, "post").then((res) => {
+            if (res.success) {
+              that.$message.success(res.message);
+              that.$emit('ok');
+              this.visible3 = false;
+              this.confirmLoading = false;
+              this.order2 = {};
+            } else {
+              that.$message.warning(res.message);
+              this.visible3 = false;
+              this.confirmLoading = false;
+              this.order2 = {};
+            }
+          }).finally(() => {
+            that.confirmLoading = false;
+            this.handleExpand(true, this.order2);
+          });
+        }
+      });
+    },
+    handleCancel2(e) {
+      console.log('Clicked cancel button');
+      this.visible3 = false;
     },
     handleExpand(expanded, record) {
       this.expandedRowKeys = [];
@@ -367,9 +407,11 @@ export default {
       if (expanded === true) {
         this.loading = true;
         this.expandedRowKeys.push(record.id);
-        getAction(this.url.listOrderByDelegationId, {delegationId: record.id,
-          active:true,
-          status:"gt 0"}).then((res) => {
+        getAction(this.url.listOrderByDelegationId, {
+          delegationId: record.id,
+          active: true,
+          status: "gt 0"
+        }).then((res) => {
           if (res.success) {
             this.loading = false;
             this.innerData = res.result.records;

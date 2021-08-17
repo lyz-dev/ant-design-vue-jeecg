@@ -22,10 +22,10 @@
                      @handleSuperQuery="handleSuperQuery"></j-super-query>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-                    <a-menu-item key="1" @click="batchDel">
-                      <a-icon type="delete"/>
-                      删除
-                    </a-menu-item>
+          <a-menu-item key="1" @click="batchDel">
+            <a-icon type="delete"/>
+            删除
+          </a-menu-item>
           <a-menu-item key="1" @click="batchDelegate">
             <a-icon type="form"/>
             发起委托
@@ -81,22 +81,13 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a-dropdown>
-            <a class="ant-dropdown-link">操作<a-icon type="down"/></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
                   <a @click="handleEdit(record)">编辑</a>
-              </a-menu-item>
-              <a-menu-item>
-                  <a @click="showDrawer(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+          <a-divider type="vertical"/>
+                            <a @click="showDrawer(record)">详情</a>
+          <a-divider type="vertical"/>
+          <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          </a-popconfirm>
         </span>
       </a-table>
     </div>
@@ -123,7 +114,7 @@
         </a-button>
 
         <a-button type="primary" @click="qrcodebs">
-<!--          <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>-->
+          <!--          <router-link target="_blank" :to="{path:'/Qr/'+record.id}">生成二维码</router-link>-->
           生成二维码
         </a-button>
 
@@ -132,17 +123,18 @@
       <a-divider style="margin-bottom: 32px"/>
       <a-card :bordered="false">
         <detail-list>
-          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex' && column.title !='操作'" v-for="column in columns"
+          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex' && column.title !='操作'"
+                            v-for="column in columns"
                             :key="column.dataIndex">{{ showValue(column.dataIndex) }}
           </detail-list-item>
         </detail-list>
       </a-card>
       <a-divider style="margin-bottom: 32px"/>
 
-        <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
-                                     v-bind:cycle="record.detectionCycle"
-                                     v-bind:visibility="visible">
-        </TraceabilityInformationList>
+      <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
+                                   v-bind:cycle="record.detectionCycle"
+                                   v-bind:visibility="visible">
+      </TraceabilityInformationList>
 
     </a-drawer>
 
@@ -270,7 +262,7 @@ export default {
       visible2: false,
       qjVisible: false,
       jlVisible: false,
-      qrcodeVisible:false,
+      qrcodeVisible: false,
       drawerWidth: 850,
       confirmLoading: false,
       disableSubmit: false,
@@ -308,37 +300,44 @@ export default {
         {
           title: '器具名称',
           align: "center",
-          dataIndex: 'name'
+          dataIndex: 'name',
+          fixed: 'left'
         },
         {
           title: '型号',
           align: "center",
-          dataIndex: 'model'
+          dataIndex: 'model',
+          fixed: 'left'
         },
         {
           title: '生产厂家',
           align: "center",
-          dataIndex: 'manufacturer'
+          dataIndex: 'manufacturer',
+          fixed: 'left'
         },
         {
           title: '出厂编号',
           align: "center",
-          dataIndex: 'serialNumber'
+          dataIndex: 'serialNumber',
+          fixed: 'left'
         },
         {
           title: '设备编号',
           align: "center",
-          dataIndex: 'equipmentNumber'
+          dataIndex: 'equipmentNumber',
+          fixed: 'left'
         },
         {
           title: '测量范围',
           align: "center",
-          dataIndex: 'measurementRange'
+          dataIndex: 'measurementRange',
+          fixed: 'left'
         },
         {
           title: '准确度	',
           align: "center",
-          dataIndex: 'accuracy'
+          dataIndex: 'accuracy',
+          fixed: 'left'
         },
         {
           title: '配件情况',

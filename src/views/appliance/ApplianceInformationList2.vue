@@ -329,37 +329,44 @@ export default {
         {
           title: '器具名称',
           align: "center",
-          dataIndex: 'name'
+          dataIndex: 'name',
+          fixed: 'left'
         },
         {
           title: '型号',
           align: "center",
-          dataIndex: 'model'
+          dataIndex: 'model',
+          fixed: 'left'
         },
         {
           title: '生产厂家',
           align: "center",
-          dataIndex: 'manufacturer'
+          dataIndex: 'manufacturer',
+          fixed: 'left'
         },
         {
           title: '出厂编号',
           align: "center",
-          dataIndex: 'serialNumber'
+          dataIndex: 'serialNumber',
+          fixed: 'left'
         },
         {
           title: '设备编号',
           align: "center",
-          dataIndex: 'equipmentNumber'
+          dataIndex: 'equipmentNumber',
+          fixed: 'left'
         },
         {
           title: '测量范围',
           align: "center",
-          dataIndex: 'measurementRange'
+          dataIndex: 'measurementRange',
+          fixed: 'left'
         },
         {
           title: '准确度	',
           align: "center",
-          dataIndex: 'accuracy'
+          dataIndex: 'accuracy',
+          fixed: 'left'
         },
         {
           title: '配件情况',
@@ -433,8 +440,7 @@ export default {
       dictOptions: {},
       superFieldList: [],
       queryParam: {
-        dataStr2:[],
-        dataStr:'',
+        numOfDays:'30'
       },
     }
   },

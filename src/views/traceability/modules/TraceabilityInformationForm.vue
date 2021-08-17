@@ -4,6 +4,11 @@
       <a-form-model ref="form" :model="model" :rules="validatorRules" slot="detail">
         <a-row>
           <a-col :span="24">
+            <a-form-model-item label="是否为主周期" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-switch checked-children="是" un-checked-children="否" v-model="model.flag" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="检测机构" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testingFacility">
 <!--              <a-input v-model="model.testingFacility" placeholder="请输入检测机构"></a-input>-->
               <a-auto-complete
@@ -17,7 +22,7 @@
           <a-col :span="24">
             <a-form-model-item label="检测类型" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testingType">
 <!--              <a-input v-model="model.testingType" placeholder="请输入检测类型"></a-input>-->
-              <a-radio-group  v-model="model.testingType" default-value="检定" button-style="solid">
+              <a-radio-group  v-model="model.testingType" button-style="solid">
                 <a-radio-button value="检定">
                   检定
                 </a-radio-button>
@@ -36,7 +41,7 @@
           <a-col :span="24">
             <a-form-model-item label="检测地点" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="detectionLocation">
 <!--              <a-input v-model="model.detectionLocation" placeholder="请输入检测地点"></a-input>-->
-              <a-radio-group  v-model="model.detectionLocation" default-value="本地" button-style="solid">
+              <a-radio-group  v-model="model.detectionLocation" button-style="solid">
                 <a-radio-button value="本地">
                   本地
                 </a-radio-button>
@@ -56,13 +61,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="证书编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="certificateNumber">
-              <a-input v-model="model.certificateNumber" placeholder="请输入证书编号"></a-input>
+            <a-form-model-item label="到期日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dateDue">
+              <j-date placeholder="请选择到期日期" v-model="model.dateDue" style="width: 100%"/>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="到期日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dateDue">
-              <j-date placeholder="请选择到期日期" v-model="model.dateDue" style="width: 100%"/>
+            <a-form-model-item label="证书编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="certificateNumber">
+              <a-input v-model="model.certificateNumber" placeholder="请输入证书编号"></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -85,11 +90,11 @@
               <a-input v-model="model.remark" placeholder="请输入备注"></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :span="24">
-            <a-form-model-item hidden label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="applianceid">
-              <a-input v-model="model.applianceid"   placeholder="请输入器具id"></a-input>
-            </a-form-model-item>
-          </a-col>
+<!--          <a-col :span="24">-->
+<!--            <a-form-model-item hidden label="器具id" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="applianceid">-->
+<!--              <a-input v-model="model.applianceid"   placeholder="请输入器具id"></a-input>-->
+<!--            </a-form-model-item>-->
+<!--          </a-col>-->
         </a-row>
       </a-form-model>
     </j-form-container>
@@ -125,7 +130,12 @@ export default {
   data() {
     return {
       myTempObj:[],
-      model: {},
+      model: {
+        "flag":true,
+        "testingType":"检定",
+        "detectionLocation":"本地",
+        "applianceid":this.applianceInformationId
+      },
       labelCol: {
         xs: {span: 24},
         sm: {span: 5},
@@ -142,24 +152,24 @@ export default {
         testingType: [
           {required: true, message: '请输入检测类型!'},
         ],
-        detectionLocation: [
-          {required: true, message: '请输入检测地点!'},
-        ],
+        // detectionLocation: [
+        //   {required: true, message: '请输入检测地点!'},
+        // ],
         detectionDate: [
           {required: true, message: '请输入检测日期!'},
         ],
-        certificateNumber: [
-          {required: true, message: '请输入证书编号!'},
-        ],
+        // certificateNumber: [
+        //   {required: true, message: '请输入证书编号!'},
+        // ],
         dateDue: [
           {required: true, message: '请输入到期日期!'},
         ],
-        testItem: [
-          {required: true, message: '请输入检测项目!'},
-        ],
-        testFee: [
-          {required: true, message: '请输入检测费!'},
-        ],
+        // testItem: [
+        //   {required: true, message: '请输入检测项目!'},
+        // ],
+        // testFee: [
+        //   {required: true, message: '请输入检测费!'},
+        // ],
       },
       url: {
         add: "/traceability/traceabilityInformation/add",
@@ -185,7 +195,7 @@ export default {
   },
   methods: {
     autoDateDue(){
-      // alert(this.model.detectionDate);
+      // alert(this.cycle);
       this.model.dateDue = moment(this.model.detectionDate).add(this.cycle, 'month').subtract(1, 'days').format('YYYY-MM-DD');
     },
     filterOption(input, option) {

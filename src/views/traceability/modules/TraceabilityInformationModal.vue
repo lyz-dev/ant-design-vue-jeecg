@@ -8,7 +8,9 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <traceability-information-form v-bind:applianceInformationId="this.applianceInformationId" ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></traceability-information-form>
+    <traceability-information-form v-bind:applianceInformationId="this.applianceInformationId"
+                                   v-bind:cycle="this.cycle"
+                                   ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></traceability-information-form>
   </j-modal>
 </template>
 
@@ -17,7 +19,7 @@
   import TraceabilityInformationForm from './TraceabilityInformationForm'
   export default {
     name: 'TraceabilityInformationModal',
-    props: ['applianceInformationId'],
+    props: ['applianceInformationId','cycle'],
     components: {
       TraceabilityInformationForm
     },

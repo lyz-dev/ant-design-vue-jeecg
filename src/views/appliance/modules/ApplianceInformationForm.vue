@@ -74,13 +74,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="检测周期(月)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usedNumber">
-              <a-input v-model="model.detectionCycle" placeholder="检测周期(月)" type="number" ></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24">
             <a-form-model-item label="是否为计量器具" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="ifmetering">
               <j-switch v-model="model.ifmetering"  ></j-switch>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24" v-if="model.ifmetering==='Y'">
+            <a-form-model-item label="检测周期(月)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usedNumber">
+              <a-input v-model="model.detectionCycle" placeholder="检测周期(月)" type="number" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
