@@ -11,13 +11,13 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('证书确认')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
-      </a-upload>
-      <!-- 高级查询区域 -->
-      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+<!--      <a-button type="primary" icon="download" @click="handleExportXls('证书确认')">导出</a-button>-->
+<!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
+<!--        <a-button type="primary" icon="import">导入</a-button>-->
+<!--      </a-upload>-->
+<!--      &lt;!&ndash; 高级查询区域 &ndash;&gt;-->
+<!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
@@ -112,101 +112,92 @@
         // 表头
         columns: [
           {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
+            title: '器具名称',
+            align: "center",
+            dataIndex: 'appliance.name',
+          },
+          {
+            title: '器具型号',
+            align: "center",
+            dataIndex: 'appliance.model',
+          },
+          {
+            title: '检测机构',
+            align: "center",
+            dataIndex: 'testing_facility'
+          },
+          {
+            title: '检测类型',
+            align: "center",
+            dataIndex: 'testing_type'
+          },
+          {
+            title: '检测地点',
+            align: "center",
+            dataIndex: 'detection_location'
+          },
+          {
+            title: '检测日期',
+            align: "center",
+            dataIndex: 'detection_date',
+            customRender: function (text) {
+              return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
             }
           },
           {
-            title:'检测依据',
-            align:"center",
-            dataIndex: 'testBasis'
+            title: '证书编号',
+            align: "center",
+            dataIndex: 'certificate_number'
           },
           {
-            title:'应用标准名称及编号',
-            align:"center",
-            dataIndex: 'standardNameAndNumber'
+            title: '检测周期',
+            align: "center",
+            dataIndex: 'detection_cycle',
+            type:Number,
           },
           {
-            title:'技术要求',
-            align:"center",
-            dataIndex: 'skillsRequirement'
-          },
-          {
-            title:'溯源结果',
-            align:"center",
-            dataIndex: 'traceabilityResults'
-          },
-          {
-            title:'溯源结果备注',
-            align:"center",
-            dataIndex: 'traceabilityResultsRemark',
-            scopedSlots: {customRender: 'imgSlot'}
-          },
-          {
-            title:'确认结果',
-            align:"center",
-            dataIndex: 'verifyResults_dictText'
-          },
-          {
-            title:'确认人',
-            align:"center",
-            dataIndex: 'confirmor'
-          },
-          {
-            title:'确认日期',
-            align:"center",
-            dataIndex: 'confirmationDate',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
+            title: '到期日期',
+            align: "center",
+            dataIndex: 'date_due',
+            customRender: function (text) {
+              return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
             }
           },
           {
-            title:'审核人',
-            align:"center",
-            dataIndex: 'reviewer'
+            title: '检测项目',
+            align: "center",
+            dataIndex: 'test_item'
           },
           {
-            title:'审核日期',
-            align:"center",
-            dataIndex: 'reviewDate',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            title: '检测费',
+            align: "center",
+            dataIndex: 'test_fee'
           },
           {
-            title:'批准人',
-            align:"center",
-            dataIndex: 'approver'
+            title: '电子证书',
+            align: "center",
+            dataIndex: 'certificate_backup',
+            scopedSlots: {customRender: 'fileSlot'}
           },
           {
-            title:'批准日期',
-            align:"center",
-            dataIndex: 'approverDate',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            title: '备注',
+            align: "center",
+            dataIndex: 'remark'
           },
           {
             title: '操作',
             dataIndex: 'action',
-            align:"center",
-            fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' }
+            align: "center",
+            fixed: "right",
+            width: 147,
+            scopedSlots: {customRender: 'action'}
           }
         ],
         url: {
-          list: "/certificate/certificateConfirmation/list",
+          list: "/traceability/traceabilityInformation/list2",
           delete: "/certificate/certificateConfirmation/delete",
           deleteBatch: "/certificate/certificateConfirmation/deleteBatch",
-          exportXlsUrl: "/certificate/certificateConfirmation/exportXls",
-          importExcelUrl: "certificate/certificateConfirmation/importExcel",
-          
+
         },
         dictOptions:{},
         superFieldList:[],
@@ -216,27 +207,23 @@
     this.getSuperFieldList();
     },
     computed: {
-      importExcelUrl: function(){
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
-      },
     },
     methods: {
       initDictConfig(){
       },
-      getSuperFieldList(){
-        let fieldList=[];
-        fieldList.push({type:'string',value:'testBasis',text:'检测依据',dictCode:''})
-        fieldList.push({type:'string',value:'standardNameAndNumber',text:'应用标准名称及编号',dictCode:''})
-        fieldList.push({type:'string',value:'skillsRequirement',text:'技术要求',dictCode:''})
-        fieldList.push({type:'string',value:'traceabilityResults',text:'溯源结果',dictCode:''})
-        fieldList.push({type:'string',value:'traceabilityResultsRemark',text:'溯源结果备注',dictCode:''})
-        fieldList.push({type:'string',value:'verifyResults',text:'确认结果',dictCode:''})
-        fieldList.push({type:'string',value:'confirmor',text:'确认人',dictCode:''})
-        fieldList.push({type:'date',value:'confirmationDate',text:'确认日期'})
-        fieldList.push({type:'string',value:'reviewer',text:'审核人',dictCode:''})
-        fieldList.push({type:'date',value:'reviewDate',text:'审核日期'})
-        fieldList.push({type:'string',value:'approver',text:'批准人',dictCode:''})
-        fieldList.push({type:'date',value:'approverDate',text:'批准日期'})
+      getSuperFieldList() {
+        let fieldList = [];
+        fieldList.push({type: 'string', value: 'testingFacility', text: '检测机构', dictCode: ''})
+        fieldList.push({type: 'string', value: 'testingType', text: '检测类型', dictCode: ''})
+        fieldList.push({type: 'string', value: 'detectionLocation', text: '检测地点', dictCode: ''})
+        fieldList.push({type: 'date', value: 'detectionDate', text: '检测日期'})
+        fieldList.push({type: 'string', value: 'certificateNumber', text: '证书编号', dictCode: ''})
+        fieldList.push({type: 'date', value: 'dateDue', text: '到期日期'})
+        fieldList.push({type: 'string', value: 'testItem', text: '检测项目', dictCode: ''})
+        fieldList.push({type: 'string', value: 'testFee', text: '检测费', dictCode: ''})
+        fieldList.push({type: 'string', value: 'certificateBackup', text: '电子证书', dictCode: ''})
+        fieldList.push({type: 'string', value: 'remark', text: '备注', dictCode: ''})
+        fieldList.push({type: 'string', value: 'applianceid', text: '器具id', dictCode: ''})
         this.superFieldList = fieldList
       }
     }
