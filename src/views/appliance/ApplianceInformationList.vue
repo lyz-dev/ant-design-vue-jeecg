@@ -121,18 +121,16 @@
       </a-space>
 
       <a-divider style="margin-bottom: 32px"/>
-      <a-card :bordered="false">
-        <detail-list>
-          <detail-list-item :term="column.title" v-if="column.key != 'rowIndex' && column.title !='操作'"
-                            v-for="column in columns"
-                            :key="column.dataIndex">{{ showValue(column.dataIndex) }}
-          </detail-list-item>
-        </detail-list>
-      </a-card>
+      <a-descriptions title="器具信息" bordered>
+        <a-descriptions-item :label="column.title" v-if="column.key !== 'rowIndex' && column.title !=='操作'"
+                             v-for="column in columns" :key="column.key">
+          {{ showValue(column.dataIndex) }}
+        </a-descriptions-item>
+      </a-descriptions>
       <a-divider style="margin-bottom: 32px"/>
 
       <TraceabilityInformationList v-if="visible" v-bind:applianceInformationId="record.id"
-                                   v-bind:cycle="record.detectionCycle"
+                                   v-bind:cycle="record.detectionCycle+0"
                                    v-bind:visibility="visible">
       </TraceabilityInformationList>
 
@@ -316,28 +314,25 @@ export default {
           fixed: 'left'
         },
         {
-          title: '出厂编号',
-          align: "center",
-          dataIndex: 'serialNumber',
-          fixed: 'left'
-        },
-        {
           title: '设备编号',
           align: "center",
           dataIndex: 'equipmentNumber',
           fixed: 'left'
         },
         {
+          title: '出厂编号',
+          align: "center",
+          dataIndex: 'serialNumber',
+        },
+        {
           title: '测量范围',
           align: "center",
           dataIndex: 'measurementRange',
-          fixed: 'left'
         },
         {
           title: '准确度	',
           align: "center",
           dataIndex: 'accuracy',
-          fixed: 'left'
         },
         {
           title: '配件情况',

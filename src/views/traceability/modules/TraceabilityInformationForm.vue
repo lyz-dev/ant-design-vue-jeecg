@@ -61,6 +61,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="检测周期(月)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="traceCycle">
+              <a-input type="number" v-model="traceCycle" style="width: 50%" @change="autoDateDue"/>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="到期日期" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dateDue">
               <j-date placeholder="请选择到期日期" v-model="model.dateDue" style="width: 100%"/>
             </a-form-model-item>
@@ -130,6 +135,7 @@ export default {
   data() {
     return {
       myTempObj:[],
+      traceCycle:this.cycle,
       model: {
         "flag":true,
         "testingType":"检定",
@@ -196,7 +202,7 @@ export default {
   methods: {
     autoDateDue(){
       // alert(this.cycle);
-      this.model.dateDue = moment(this.model.detectionDate).add(this.cycle, 'month').subtract(1, 'days').format('YYYY-MM-DD');
+      this.model.dateDue = moment(this.model.detectionDate).add(this.traceCycle, 'month').subtract(1, 'days').format('YYYY-MM-DD');
     },
     filterOption(input, option) {
       return (

@@ -1,31 +1,25 @@
 <template>
   <a-card :bordered="false">
-    <detail-list>
-      <detail-list-item :term="column.title" v-if="column.key != 'rowIndex'" v-for="column in columns"
-                        :key="column.dataIndex">{{ showValue(column.dataIndex) }}
-      </detail-list-item>
-    </detail-list>
+    <a-descriptions title="器具信息" bordered>
+      <a-descriptions-item :label="column.title" v-if="column.key !== 'rowIndex' && column.title !=='操作'"
+                           v-for="column in columns" :key="column.key">
+        {{ showValue(column.dataIndex) }}
+      </a-descriptions-item>
+    </a-descriptions>
     <a-divider style="margin-bottom: 32px"/>
-
-    <div class="title">溯源信息</div>
-    <TraceabilityInformationList v-bind:applianceInformationId="$route.params.id">
-    </TraceabilityInformationList>
+    <trace-detail v-bind:applianceInformationId="$route.params.id" v-if="$route.params.id"></trace-detail>
   </a-card>
 </template>
 
 <script>
 
-import TraceabilityInformationList from '../traceability/TraceabilityInformationList'
-import DetailList from '@/components/tools/DetailList'
+import TraceDetail from "../traceability/TraceDetail";
 
 
-const DetailListItem = DetailList.Item
 export default {
   name: "Detail",
   components: {
-    TraceabilityInformationList,
-    DetailListItem,
-    DetailList
+    TraceDetail,
   },
   data() {
     return {

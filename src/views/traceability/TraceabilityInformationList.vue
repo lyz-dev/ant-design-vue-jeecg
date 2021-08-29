@@ -69,7 +69,7 @@
     </div>
 
     <traceability-information-modal v-bind:applianceInformationId="this.applianceInformationId"
-                                    v-bind:cycle="this.cycle"
+                                    v-bind:cycle="this.cycle + 0"
                                     ref="modalForm" @ok="modalFormOk"></traceability-information-modal>
   </a-card>
 </template>
@@ -84,7 +84,24 @@ import TraceabilityInformationModal from './modules/TraceabilityInformationModal
 export default {
   name: 'TraceabilityInformationList',
   mixins: [JeecgListMixin, mixinDevice],
-  props: ['applianceInformationId','visibility','cycle'],
+  props: {
+    //表单禁用
+    visibility: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    applianceInformationId: {
+      type: String,
+      required: true
+    },
+//周期
+    cycle: {
+      type: Number,
+      default: 1,
+      required: false
+    }
+  },
   components: {
     TraceabilityInformationModal
   },
@@ -98,7 +115,7 @@ export default {
           align: "center",
           dataIndex: 'flag',
           customRender: function (text) {
-            return !text ? "否" : (text===true ?'是':'否')
+            return !text ? "否" : (text === true ? '是' : '否')
           }
         },
         {
@@ -132,7 +149,8 @@ export default {
         {
           title: '检测周期',
           align: "center",
-          dataIndex: 'detectionCycle'
+          dataIndex: 'detectionCycle',
+          type:Number,
         },
         {
           title: '到期日期',
@@ -173,7 +191,7 @@ export default {
         }
       ],
       url: {
-        list:"/traceability/traceabilityInformation/byApplianceInformationId?applianceInformationId="+this.applianceInformationId,
+        list: "/traceability/traceabilityInformation/byApplianceInformationId?applianceInformationId=" + this.applianceInformationId,
         delete: "/traceability/traceabilityInformation/delete",
         deleteBatch: "/traceability/traceabilityInformation/deleteBatch",
         exportXlsUrl: "/traceability/traceabilityInformation/exportXls",
