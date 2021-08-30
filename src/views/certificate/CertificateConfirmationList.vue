@@ -11,7 +11,7 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
 <!--      <a-button type="primary" icon="download" @click="handleExportXls('证书确认')">导出</a-button>-->
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
@@ -68,7 +68,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+<!--          <a @click="handleAdd">编辑</a>-->
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -109,6 +109,7 @@
     data () {
       return {
         description: '证书确认管理页面',
+        verifyResults:[],
         // 表头
         columns: [
           {
@@ -210,6 +211,12 @@
     },
     methods: {
       initDictConfig(){
+        //初始化字典 - 性别
+        initDictOptions('verifyResults').then((res) => {
+          if (res.success) {
+            this.verifyResults = res.result;
+          }
+        });
       },
       getSuperFieldList() {
         let fieldList = [];

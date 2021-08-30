@@ -32,7 +32,7 @@
             {{ track.testingType }}
           </td>
           <td rowspan="4">
-            <vue-qr :logoSrc="downloadData.icon" :text="downloadData.url" style="height:65px;width:65px;"></vue-qr>
+            <vue-qr :logoSrc="downloadData.icon" :margin="0" :text="downloadData.url" style="height:65px;width:65px;"></vue-qr>
           </td>
         </tr>
         <tr>

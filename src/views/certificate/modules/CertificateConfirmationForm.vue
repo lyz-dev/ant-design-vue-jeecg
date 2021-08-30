@@ -24,13 +24,13 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="溯源结果备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="traceabilityResultsRemark">
+            <a-form-model-item label="溯源结果" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="traceabilityResultsRemark">
               <j-image-upload isMultiple  v-model="model.traceabilityResultsRemark" ></j-image-upload>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="确认结果" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verifyResults">
-              <j-dict-select-tag type="list" v-model="model.verifyResults" dictCode="" placeholder="请选择确认结果" />
+              <j-dict-select-tag   v-model="model.verifyResults" dictCode="verifyResults" placeholder="请选择确认结果" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">

@@ -26,7 +26,7 @@
             {{ applianceInformation.serialNumber }}
           </td>
           <td rowspan="4">
-            <vue-qr :logoSrc="downloadData.icon" :text="downloadData.url" style="height:80px;width:80px;"></vue-qr>
+            <vue-qr :logoSrc="downloadData.icon" :margin="0" :text="downloadData.url" style="height:85px;width:85px;"></vue-qr>
           </td>
         </tr>
         <tr>

@@ -78,14 +78,37 @@
               <j-switch v-model="model.ifmetering"  ></j-switch>
             </a-form-model-item>
           </a-col>
+          <a-col :span="24" v-if="model.ifmeteringda==='Y'">
+            <a-form-model-item label="检测周期(月)" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-model="model.detectionCycle" placeholder="检测周期(月)" type="number" ></a-input>
+            </a-form-model-item>
+          </a-col>
           <a-col :span="24" v-if="model.ifmetering==='Y'">
             <a-form-model-item label="检测周期(月)" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="usedNumber">
               <a-input v-model="model.detectionCycle" placeholder="检测周期(月)" type="number" ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="备注	" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="remark">
+            <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="remark">
               <a-textarea v-model="model.remark" rows="4" placeholder="请输入备注	" />
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="检测依据" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="testBasis">
+              <a-input v-model="model.testBasis" rows="4" placeholder="请输入检测依据	" />
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="应用标准名称及编号" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="standardNameAndNumber">
+              <a-input v-model="model.standardNameAndNumber" rows="4" placeholder="请输入应用标准名称及编号	" />
+            </a-form-model-item>
+          </a-col>
+
+          <a-col :span="24">
+            <a-form-model-item label="技术要求" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="skillsRequirement">
+              <a-input v-model="model.skillsRequirement" rows="4" placeholder="请输入技术要求" />
             </a-form-model-item>
           </a-col>
         </a-row>
