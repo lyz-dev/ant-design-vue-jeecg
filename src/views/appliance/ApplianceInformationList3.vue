@@ -373,6 +373,21 @@ export default {
           dataIndex: 'detectionCycle'
         },
         {
+          title: '检测依据',
+          align: "center",
+          dataIndex: 'testBasis'
+        },
+        {
+          title: '应用标准名称及编号',
+          align: "center",
+          dataIndex: 'standardNameAndNumber'
+        },
+        {
+          title: '技术要求',
+          align: "center",
+          dataIndex: 'skillsRequirement'
+        },
+        {
           title: '是否为计量器具',
           align: "center",
           dataIndex: 'ifmetering',

@@ -11,19 +11,19 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-<!--      <a-button type="primary" icon="download" @click="handleExportXls('证书确认')">导出</a-button>-->
+<!--      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>-->
+      <a-button type="primary" icon="download" @click="handleExportXls('证书确认')">导出</a-button>
 <!--      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">-->
 <!--        <a-button type="primary" icon="import">导入</a-button>-->
 <!--      </a-upload>-->
 <!--      &lt;!&ndash; 高级查询区域 &ndash;&gt;-->
 <!--      <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>-->
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
+<!--      <a-dropdown v-if="selectedRowKeys.length > 0">-->
+<!--        <a-menu slot="overlay">-->
+<!--          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>-->
+<!--        </a-menu>-->
+<!--        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>-->
+<!--      </a-dropdown>-->
     </div>
 
     <!-- table区域-begin -->
@@ -68,22 +68,22 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-<!--          <a @click="handleAdd">编辑</a>-->
+          <a @click="handleEdit(record)">确认证书</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+<!--          <a-divider type="vertical" />-->
+<!--          <a-dropdown>-->
+<!--            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>-->
+<!--            <a-menu slot="overlay">-->
+<!--              <a-menu-item>-->
+<!--                <a @click="handleDetail(record)">详情</a>-->
+<!--              </a-menu-item>-->
+<!--              <a-menu-item>-->
+<!--                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">-->
+<!--                  <a>删除</a>-->
+<!--                </a-popconfirm>-->
+<!--              </a-menu-item>-->
+<!--            </a-menu>-->
+<!--          </a-dropdown>-->
         </span>
 
       </a-table>
@@ -99,6 +99,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import CertificateConfirmationModal from './modules/CertificateConfirmationModal'
+  import { initDictOptions } from '../../components/dict/JDictSelectUtil'
 
   export default {
     name: 'CertificateConfirmationList',
@@ -125,22 +126,22 @@
           {
             title: '检测机构',
             align: "center",
-            dataIndex: 'testing_facility'
+            dataIndex: 'testingFacility'
           },
           {
             title: '检测类型',
             align: "center",
-            dataIndex: 'testing_type'
+            dataIndex: 'testingType'
           },
           {
             title: '检测地点',
             align: "center",
-            dataIndex: 'detection_location'
+            dataIndex: 'detectionLocation'
           },
           {
             title: '检测日期',
             align: "center",
-            dataIndex: 'detection_date',
+            dataIndex: 'detectionDate',
             customRender: function (text) {
               return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
             }
@@ -148,18 +149,18 @@
           {
             title: '证书编号',
             align: "center",
-            dataIndex: 'certificate_number'
+            dataIndex: 'certificateNumber'
           },
           {
             title: '检测周期',
             align: "center",
-            dataIndex: 'detection_cycle',
+            dataIndex: 'detectionCycle',
             type:Number,
           },
           {
             title: '到期日期',
             align: "center",
-            dataIndex: 'date_due',
+            dataIndex: 'dateDue',
             customRender: function (text) {
               return !text ? "" : (text.length > 10 ? text.substr(0, 10) : text)
             }
@@ -167,17 +168,17 @@
           {
             title: '检测项目',
             align: "center",
-            dataIndex: 'test_item'
+            dataIndex: 'testItem'
           },
           {
             title: '检测费',
             align: "center",
-            dataIndex: 'test_fee'
+            dataIndex: 'testFee'
           },
           {
             title: '电子证书',
             align: "center",
-            dataIndex: 'certificate_backup',
+            dataIndex: 'certificateBackup',
             scopedSlots: {customRender: 'fileSlot'}
           },
           {
@@ -198,7 +199,7 @@
           list: "/traceability/traceabilityInformation/list2",
           delete: "/certificate/certificateConfirmation/delete",
           deleteBatch: "/certificate/certificateConfirmation/deleteBatch",
-
+          exportXlsUrl: "/certificate/certificateConfirmation/exportXls",
         },
         dictOptions:{},
         superFieldList:[],
@@ -211,7 +212,7 @@
     },
     methods: {
       initDictConfig(){
-        //初始化字典 - 性别
+        //初始化确认状态
         initDictOptions('verifyResults').then((res) => {
           if (res.success) {
             this.verifyResults = res.result;
